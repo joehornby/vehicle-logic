@@ -53,6 +53,7 @@ export function BlockEditor({
               >
                 <option value="on">on</option>
                 <option value="value">value</option>
+                <option value="write">write</option>
               </select>
             </div>
             {formData.logicType === "value" && (
