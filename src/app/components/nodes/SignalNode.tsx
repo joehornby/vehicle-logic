@@ -11,6 +11,7 @@ interface SignalNodeData {
   logicType: "on" | "value" | "write";
   operator: "=" | "<" | ">";
   value: number;
+  unit?: string;
 }
 
 export const SignalNode: React.FC<{ data: SignalNodeData }> = ({ data }) => {
@@ -54,13 +55,15 @@ export const SignalNode: React.FC<{ data: SignalNodeData }> = ({ data }) => {
             ? "when: on"
             : data.logicType === "write"
             ? "output: write signal"
-            : `when: value ${data.operator || "="} ${data.value || 0}`}
+            : `when: value ${data.operator || "="} ${data.value || 0}${
+                data.unit ? ` ${data.unit}` : ""
+              }`}
         </span>
       </section>
 
       <section className="space-y-2" aria-label="Node connections">
         {data.logicType === "write" && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Handle
@@ -75,12 +78,10 @@ export const SignalNode: React.FC<{ data: SignalNodeData }> = ({ data }) => {
                 <p>Input</p>
               </TooltipContent>
             </Tooltip>
-            <span className="text-xs text-gray-600">Input</span>
           </div>
         )}
         {data.logicType !== "write" && (
-          <div className="flex items-center justify-end gap-2">
-            <span className="text-xs text-gray-600">Output</span>
+          <div className="flex items-center justify-end">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Handle
