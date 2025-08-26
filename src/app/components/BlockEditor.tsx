@@ -4,10 +4,16 @@ import { Node } from 'reactflow';
 interface BlockEditorProps {
   node: Node;
   onUpdateNode: (nodeId: string, newData: Record<string, unknown>) => void;
+  onRemoveNode: (nodeId: string) => void;
   onClose: () => void;
 }
 
-export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
+export function BlockEditor({
+  node,
+  onUpdateNode,
+  onRemoveNode,
+  onClose,
+}: BlockEditorProps) {
   const [formData, setFormData] = useState(node.data);
 
   useEffect(() => {
@@ -22,7 +28,7 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
 
   const renderFormFields = () => {
     switch (node.type) {
-      case 'vehicleSpeed':
+      case "vehicleSpeed":
         return (
           <div className="space-y-4">
             <div>
@@ -31,8 +37,8 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
               </label>
               <input
                 type="text"
-                value={formData.label || ''}
-                onChange={(e) => handleInputChange('label', e.target.value)}
+                value={formData.label || ""}
+                onChange={(e) => handleInputChange("label", e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600"
               />
             </div>
@@ -41,23 +47,25 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
                 Logic Type
               </label>
               <select
-                value={formData.logicType || 'on'}
-                onChange={(e) => handleInputChange('logicType', e.target.value)}
+                value={formData.logicType || "on"}
+                onChange={(e) => handleInputChange("logicType", e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600"
               >
                 <option value="on">on</option>
                 <option value="value">value</option>
               </select>
             </div>
-            {formData.logicType === 'value' && (
+            {formData.logicType === "value" && (
               <>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Operator
                   </label>
                   <select
-                    value={formData.operator || '='}
-                    onChange={(e) => handleInputChange('operator', e.target.value)}
+                    value={formData.operator || "="}
+                    onChange={(e) =>
+                      handleInputChange("operator", e.target.value)
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600"
                   >
                     <option value="=">=</option>
@@ -72,7 +80,9 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
                   <input
                     type="number"
                     value={formData.value || 0}
-                    onChange={(e) => handleInputChange('value', parseInt(e.target.value) || 0)}
+                    onChange={(e) =>
+                      handleInputChange("value", parseInt(e.target.value) || 0)
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600"
                   />
                 </div>
@@ -81,7 +91,7 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
           </div>
         );
 
-      case 'thresholdBlock':
+      case "thresholdBlock":
         return (
           <div className="space-y-4">
             <div>
@@ -90,8 +100,8 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
               </label>
               <input
                 type="text"
-                value={formData.label || ''}
-                onChange={(e) => handleInputChange('label', e.target.value)}
+                value={formData.label || ""}
+                onChange={(e) => handleInputChange("label", e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600"
               />
             </div>
@@ -100,8 +110,8 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
                 SS Type
               </label>
               <select
-                value={formData.ssType || 'bar graph'}
-                onChange={(e) => handleInputChange('ssType', e.target.value)}
+                value={formData.ssType || "bar graph"}
+                onChange={(e) => handleInputChange("ssType", e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600"
               >
                 <option value="bar graph">bar graph</option>
@@ -109,7 +119,7 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
                 <option value="pie chart">pie chart</option>
               </select>
             </div>
-            {['A', 'B', 'C', 'D'].map((letter) => (
+            {["A", "B", "C", "D"].map((letter) => (
               <div key={letter}>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Threshold {letter}
@@ -117,7 +127,12 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
                 <input
                   type="number"
                   value={formData[`threshold${letter}`] || 0}
-                  onChange={(e) => handleInputChange(`threshold${letter}`, parseInt(e.target.value) || 0)}
+                  onChange={(e) =>
+                    handleInputChange(
+                      `threshold${letter}`,
+                      parseInt(e.target.value) || 0
+                    )
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600"
                 />
               </div>
@@ -125,7 +140,7 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
           </div>
         );
 
-      case 'gateBlock':
+      case "gateBlock":
         return (
           <div className="space-y-4">
             <div>
@@ -134,8 +149,8 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
               </label>
               <input
                 type="text"
-                value={formData.label || ''}
-                onChange={(e) => handleInputChange('label', e.target.value)}
+                value={formData.label || ""}
+                onChange={(e) => handleInputChange("label", e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600"
               />
             </div>
@@ -144,8 +159,8 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
                 Operator
               </label>
               <select
-                value={formData.operator || 'AND'}
-                onChange={(e) => handleInputChange('operator', e.target.value)}
+                value={formData.operator || "AND"}
+                onChange={(e) => handleInputChange("operator", e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600"
               >
                 <option value="AND">AND</option>
@@ -159,7 +174,7 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
           </div>
         );
 
-      case 'calculationBlock':
+      case "calculationBlock":
         return (
           <div className="space-y-4">
             <div>
@@ -168,8 +183,8 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
               </label>
               <input
                 type="text"
-                value={formData.label || ''}
-                onChange={(e) => handleInputChange('label', e.target.value)}
+                value={formData.label || ""}
+                onChange={(e) => handleInputChange("label", e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600"
               />
             </div>
@@ -179,8 +194,10 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
               </label>
               <input
                 type="text"
-                value={formData.calculationStep || ''}
-                onChange={(e) => handleInputChange('calculationStep', e.target.value)}
+                value={formData.calculationStep || ""}
+                onChange={(e) =>
+                  handleInputChange("calculationStep", e.target.value)
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600"
               />
             </div>
@@ -189,8 +206,10 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
                 Calculation Type
               </label>
               <select
-                value={formData.calculationType || 'addition'}
-                onChange={(e) => handleInputChange('calculationType', e.target.value)}
+                value={formData.calculationType || "addition"}
+                onChange={(e) =>
+                  handleInputChange("calculationType", e.target.value)
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600"
               >
                 <option value="addition">addition</option>
@@ -210,7 +229,12 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
               <input
                 type="number"
                 value={formData.upperThreshold || 0}
-                onChange={(e) => handleInputChange('upperThreshold', parseInt(e.target.value) || 0)}
+                onChange={(e) =>
+                  handleInputChange(
+                    "upperThreshold",
+                    parseInt(e.target.value) || 0
+                  )
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600"
               />
             </div>
@@ -221,7 +245,12 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
               <input
                 type="number"
                 value={formData.lowerThreshold || 0}
-                onChange={(e) => handleInputChange('lowerThreshold', parseInt(e.target.value) || 0)}
+                onChange={(e) =>
+                  handleInputChange(
+                    "lowerThreshold",
+                    parseInt(e.target.value) || 0
+                  )
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600"
               />
             </div>
@@ -247,8 +276,18 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
           className="text-gray-500 hover:text-gray-700 p-1"
           aria-label="Close block editor"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </header>
@@ -259,7 +298,9 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
           <h3 className="text-sm font-medium text-gray-600">Block Name</h3>
         </div>
         <div className="bg-gray-100 p-2 rounded">
-          <span className="text-sm text-gray-800">{node.data.label || 'Unnamed Block'}</span>
+          <span className="text-sm text-gray-800">
+            {node.data.label || "Unnamed Block"}
+          </span>
         </div>
       </section>
 
@@ -270,28 +311,32 @@ export function BlockEditor({ node, onUpdateNode, onClose }: BlockEditorProps) {
         </div>
         <div className="bg-foreground text-background p-2 rounded text-center">
           <span className="text-sm font-medium">
-            {node.data.operator || node.data.calculationType || 
-             (node.data.logicType ? 
-               (node.data.logicType === 'on' ? 'on' : `value ${node.data.operator || '='} ${node.data.value || 0}`) :
-               'not configured'
-             ) || 
-             node.data.clause || 'N/A'}
+            {node.data.operator ||
+              node.data.calculationType ||
+              (node.data.logicType
+                ? node.data.logicType === "on"
+                  ? "on"
+                  : `value ${node.data.operator || "="} ${node.data.value || 0}`
+                : "not configured") ||
+              node.data.clause ||
+              "N/A"}
           </span>
         </div>
       </section>
 
       {/* Form Fields */}
-      <section className="flex-1 overflow-y-auto p-4" aria-label="Block configuration form">
-        <form onSubmit={(e) => e.preventDefault()}>
-          {renderFormFields()}
-        </form>
+      <section
+        className="flex-1 overflow-y-auto p-4"
+        aria-label="Block configuration form"
+      >
+        <form onSubmit={(e) => e.preventDefault()}>{renderFormFields()}</form>
       </section>
 
       {/* Footer */}
       <footer className="p-4 border-t border-gray-200 bg-gray-50">
         <button
-          onClick={onClose}
-          className="w-full bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition-colors"
+          onClick={() => onRemoveNode(node.id)}
+          className="w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors"
           aria-label="Remove this block from canvas"
         >
           Remove Block
