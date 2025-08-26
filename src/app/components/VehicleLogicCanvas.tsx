@@ -37,6 +37,7 @@ const initialNodes: Node[] = [
       logicType: "value",
       operator: ">",
       value: 20,
+      unit: "mph",
     },
   },
   {
@@ -47,7 +48,8 @@ const initialNodes: Node[] = [
       label: "System Time",
       logicType: "value",
       operator: ">",
-      value: 17,
+      value: 5,
+      unit: "pm",
     },
   },
   {
@@ -88,7 +90,7 @@ const initialEdges: Edge[] = [
     id: "e3-4",
     source: "3",
     target: "4",
-    sourceHandle: "output-1",
+    sourceHandle: "output-2",
     targetHandle: "input",
   },
 ];
