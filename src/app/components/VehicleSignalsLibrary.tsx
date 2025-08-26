@@ -71,6 +71,11 @@ const initialCategories: SignalCategory[] = [
     isExpanded: false,
     signals: ["Gear Ratio", "Transmission Temp", "Shift Position"],
   },
+  {
+    name: "Upfit",
+    isExpanded: false,
+    signals: ["Emergency Beacon", "Work Lights"],
+  },
 ];
 
 const logicBlocks = [
