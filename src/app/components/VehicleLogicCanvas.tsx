@@ -241,6 +241,7 @@ export const VehicleLogicCanvas: React.FC = () => {
           onDragOver={onDragOver}
           onDrop={onDrop}
           nodeTypes={nodeTypes}
+          proOptions={{ hideAttribution: true }}
           fitView
           className="bg-gray-50"
         >
