@@ -10,11 +10,10 @@ import ReactFlow, {
   Connection,
   Edge,
   Node,
-  Panel,
 } from "reactflow";
 import "reactflow/dist/style.css";
 
-import { VehicleSpeedNode } from "@/app/components/nodes/VehicleSpeedNode";
+import { SignalNode } from "@/app/components/nodes/SignalNode";
 import { ThresholdBlockNode } from "@/app/components/nodes/ThresholdBlockNode";
 import { GateBlockNode } from "@/app/components/nodes/GateBlockNode";
 import { CalculationBlockNode } from "@/app/components/nodes/CalculationBlockNode";
@@ -22,7 +21,7 @@ import { VehicleSignalsLibrary } from "@/app/components/VehicleSignalsLibrary";
 import { BlockEditor } from "@/app/components/BlockEditor";
 
 const nodeTypes = {
-  vehicleSpeed: VehicleSpeedNode,
+  signal: SignalNode,
   thresholdBlock: ThresholdBlockNode,
   gateBlock: GateBlockNode,
   calculationBlock: CalculationBlockNode,
@@ -31,64 +30,66 @@ const nodeTypes = {
 const initialNodes: Node[] = [
   {
     id: "1",
-    type: "vehicleSpeed",
+    type: "signal",
     position: { x: 100, y: 100 },
-    data: { label: "Vehicle Speed", logicType: "on", operator: "=", value: 0 },
+    data: {
+      label: "Vehicle Speed",
+      logicType: "value",
+      operator: ">",
+      value: 20,
+    },
   },
   {
     id: "2",
-    type: "thresholdBlock",
-    position: { x: 400, y: 50 },
+    type: "signal",
+    position: { x: 100, y: 250 },
     data: {
-      label: "Threshold Block",
-      ssType: "bar graph",
-      thresholdA: 20,
-      thresholdB: 0,
-      thresholdC: 0,
-      thresholdD: 0,
+      label: "System Time",
+      logicType: "value",
+      operator: ">",
+      value: 17,
     },
   },
   {
     id: "3",
     type: "gateBlock",
-    position: { x: 700, y: 150 },
-    data: { label: "Gate Block", operator: "AND" },
+    position: { x: 400, y: 175 },
+    data: { label: "AND Gate", operator: "AND" },
   },
   {
     id: "4",
-    type: "calculationBlock",
-    position: { x: 400, y: 300 },
+    type: "signal",
+    position: { x: 700, y: 175 },
     data: {
-      label: "Calculation Block",
-      calculationStep: "step 1",
-      calculationType: "addition",
-      upperThreshold: 0,
-      lowerThreshold: 0,
+      label: "Emergency Beacon",
+      logicType: "write",
+      operator: "=",
+      value: 0,
     },
   },
 ];
 
 const initialEdges: Edge[] = [
   {
-    id: "e1-2",
+    id: "e1-3",
     source: "1",
-    target: "2",
+    target: "3",
     sourceHandle: "output",
-    targetHandle: "input",
+    targetHandle: "input-1",
   },
   {
     id: "e2-3",
     source: "2",
     target: "3",
-    sourceHandle: "output-1",
-    targetHandle: "input-1",
+    sourceHandle: "output",
+    targetHandle: "input-2",
   },
   {
-    id: "e4-3",
-    source: "4",
-    target: "3",
+    id: "e3-4",
+    source: "3",
+    target: "4",
     sourceHandle: "output-1",
-    targetHandle: "input-2",
+    targetHandle: "input",
   },
 ];
 
@@ -96,6 +97,7 @@ export const VehicleLogicCanvas: React.FC = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+  const [isLibraryVisible, setIsLibraryVisible] = useState(false);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
@@ -123,6 +125,17 @@ export const VehicleLogicCanvas: React.FC = () => {
     [setNodes]
   );
 
+  const removeNode = useCallback(
+    (nodeId: string) => {
+      setNodes((nds) => nds.filter((node) => node.id !== nodeId));
+      setEdges((eds) =>
+        eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
+      );
+      setSelectedNode(null);
+    },
+    [setNodes, setEdges]
+  );
+
   const addNode = useCallback(
     (type: string, position: { x: number; y: number }) => {
       const newNodeId = `${Date.now()}`;
@@ -142,7 +155,7 @@ export const VehicleLogicCanvas: React.FC = () => {
       const newNodeId = `${Date.now()}`;
       const newNode: Node = {
         id: newNodeId,
-        type: "vehicleSpeed",
+        type: "signal",
         position,
         data: { label: signalName, clause: "read" },
       };
@@ -183,10 +196,37 @@ export const VehicleLogicCanvas: React.FC = () => {
 
   return (
     <div className="w-full h-full flex">
+      {/* Library Toggle Button */}
+      <button
+        onClick={() => setIsLibraryVisible(!isLibraryVisible)}
+        className="absolute top-4 left-4 z-10 bg-white border border-gray-300 rounded-md p-2 shadow-sm hover:bg-gray-50 transition-colors"
+        aria-label={
+          isLibraryVisible ? "Hide library panel" : "Show library panel"
+        }
+      >
+        <svg
+          className={`w-4 h-4 text-gray-600 transition-transform ${
+            isLibraryVisible ? "rotate-180" : ""
+          }`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </button>
+
       {/* Vehicle Signals Library Panel */}
-      <aside aria-label="Vehicle signals library">
-        <VehicleSignalsLibrary onAddNode={addNode} />
-      </aside>
+      {isLibraryVisible && (
+        <aside aria-label="Vehicle signals library">
+          <VehicleSignalsLibrary onAddNode={addNode} />
+        </aside>
+      )}
 
       {/* Main Canvas */}
       <section className="flex-1 relative" aria-label="Logic design canvas">
@@ -215,6 +255,7 @@ export const VehicleLogicCanvas: React.FC = () => {
           <BlockEditor
             node={selectedNode}
             onUpdateNode={updateNodeData}
+            onRemoveNode={removeNode}
             onClose={() => setSelectedNode(null)}
           />
         </aside>
@@ -225,8 +266,8 @@ export const VehicleLogicCanvas: React.FC = () => {
 
 function getDefaultNodeData(type: string) {
   switch (type) {
-    case "vehicleSpeed":
-      return { label: "Vehicle Speed", clause: "read" };
+    case "signal":
+      return { label: "Signal", clause: "read" };
     case "thresholdBlock":
       return {
         label: "Threshold Block",
