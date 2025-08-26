@@ -1,5 +1,10 @@
 import React from 'react';
 import { Handle, Position } from 'reactflow';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface SignalNodeData {
   label: string;
@@ -55,25 +60,41 @@ export const SignalNode: React.FC<{ data: SignalNodeData }> = ({ data }) => {
 
       <section className="space-y-2" aria-label="Node connections">
         {data.logicType === "write" && (
-          <div className="flex items-center justify-between">
-            <Handle
-              type="target"
-              position={Position.Left}
-              id="input"
-              className="w-3 h-3 !bg-gray-500 !border-2 !border-white"
-              aria-label="Input connection point"
-            />
+          <div className="flex items-center gap-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Handle
+                  type="target"
+                  position={Position.Left}
+                  id="input"
+                  className="w-3 h-3 !bg-gray-500 !border-2 !border-white"
+                  aria-label="Input connection point"
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Input</p>
+              </TooltipContent>
+            </Tooltip>
+            <span className="text-xs text-gray-600">Input</span>
           </div>
         )}
         {data.logicType !== "write" && (
-          <div className="flex items-center justify-between">
-            <Handle
-              type="source"
-              position={Position.Right}
-              id="output"
-              className="w-3 h-3 !bg-gray-500 !border-2 !border-white"
-              aria-label="Output connection point"
-            />
+          <div className="flex items-center justify-end gap-2">
+            <span className="text-xs text-gray-600">Output</span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Handle
+                  type="source"
+                  position={Position.Right}
+                  id="output"
+                  className="w-3 h-3 !bg-gray-500 !border-2 !border-white"
+                  aria-label="Output connection point"
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Output</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         )}
       </section>

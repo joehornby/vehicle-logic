@@ -28,7 +28,7 @@ export function BlockEditor({
 
   const renderFormFields = () => {
     switch (node.type) {
-      case "vehicleSpeed":
+      case "signal":
         return (
           <div className="space-y-4">
             <div>

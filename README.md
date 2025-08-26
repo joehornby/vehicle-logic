@@ -60,7 +60,7 @@ src/
 ├── app/
 │   ├── components/
 │   │   ├── nodes/
-│   │   │   ├── VehicleSpeedNode.tsx
+│   │   │   ├── SignalNode.tsx
 │   │   │   ├── ThresholdBlockNode.tsx
 │   │   │   ├── GateBlockNode.tsx
 │   │   │   └── CalculationBlockNode.tsx
