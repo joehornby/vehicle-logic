@@ -199,7 +199,9 @@ export const VehicleLogicCanvas: React.FC = () => {
       {/* Library Toggle Button */}
       <button
         onClick={() => setIsLibraryVisible(!isLibraryVisible)}
-        className="absolute top-4 left-4 z-10 bg-white border border-gray-300 rounded-md p-2 shadow-sm hover:bg-gray-50 transition-colors"
+        className={`absolute top-4 z-10 bg-white border border-gray-300 rounded-md p-2 shadow-sm hover:bg-gray-50 transition-all cursor-pointer ${
+          isLibraryVisible ? "left-84" : "left-4"
+        }`}
         aria-label={
           isLibraryVisible ? "Hide library panel" : "Show library panel"
         }
