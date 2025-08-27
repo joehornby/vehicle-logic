@@ -198,6 +198,13 @@ export const VehicleLogicCanvas: React.FC = () => {
 
   return (
     <div className="w-full h-full flex">
+      {/* Caption Chip */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 bg-white border border-black rounded-full px-3 py-1 shadow-md">
+        <span className="text-sm font-medium text-black">
+          Live recreation of an early prototype
+        </span>
+      </div>
+
       {/* Library Toggle Button */}
       <button
         onClick={() => setIsLibraryVisible(!isLibraryVisible)}
